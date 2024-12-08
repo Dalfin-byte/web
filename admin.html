@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        /* Styles remain the same as before */
+        body {
+            font-family: "Arial", sans-serif;
+            background: #121212;
+            color: #ffffff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 20px auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #444444;
+            background: #222222;
+            color: #ffffff;
+            border-radius: 5px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            background: #ff6700;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #ff4500;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background: #333333;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #444444;
+        }
+
+        table tr:nth-child(even) {
+            background: #222222;
+        }
+
+        table tr:hover {
+            background: #333333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <form id="admin-form">
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Enter name" required>
+
+        <label for="score">Score</label>
+        <input type="number" id="score" placeholder="Enter score" required>
+
+        <button type="submit" class="btn">Add Winner</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="admin-data">
+            <!-- Editable leaderboard data will appear here -->
+        </tbody>
+    </table>
+
+    <script>
+        let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+        const adminForm = document.getElementById("admin-form");
+        const adminData = document.getElementById("admin-data");
+
+        adminForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const name = document.getElementById("name").value;
+            const score = parseInt(document.getElementById("score").value);
+
+            leaderboard.push({ name, score });
+            saveLeaderboard();
+            renderAdminTable();
+        });
+
+        function renderAdminTable() {
+            adminData.innerHTML = "";
+            leaderboard.forEach((entry, index) => {
+                adminData.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${entry.name}</td>
+                        <td>${entry.score}</td>
+                        <td>
+                            <button onclick="deleteEntry(${index})">Delete</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function saveLeaderboard() {
+            localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+        }
+
+        function deleteEntry(index) {
+            leaderboard.splice(index, 1);
+            saveLeaderboard();
+            renderAdminTable();
+        }
+
+        // Render the admin table on page load
+        renderAdminTable();
+    </script>
+</body>
+</html>

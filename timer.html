@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Timer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Arial", sans-serif;
+            background: #121212;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        nav a {
+            color: #cccccc;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        .hero {
+            padding: 100px 40px;
+            max-width: 900px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff6700;
+            margin: 30px 0;
+        }
+
+        .details p {
+            font-size: 1.2rem;
+            color: #cccccc;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff6700;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #121212;
+            background: #ffffff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #ff6700;
+            color: #ffffff;
+        }
+
+        .background-text {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%);
+            font-size: 10rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.05);
+            z-index: -1;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">ヾ(•-•`)o</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="timer.html">Projects</a>
+            <a href="leaderboard.html">Leaderboard</a>
+        </nav>
+    </header>
+
+    <main class="hero">
+        <div class="background-text">Event Timer</div>
+        <h1>Event Countdown</h1>
+        <div class="timer" id="timer">Loading...</div>
+        <div class="details">
+            <p><strong>Event Name:</strong> <span id="event-name">2d pixel art challenge</span></p>
+            <p><strong>Description:</strong> <span id="description">A 2d art challenge where artist within 3 hours create art.</span></p>
+            <p><strong>Requirements:</strong> <span id="description">Requirements:
+                • Must not use AI
+
+                • Must share the image 10 minutes after the initial timer has ended.
+
+                • Must not copy or use other peoples work
+            </span></p>
+            <p><strong>How to submit?:</strong> <span id="description">To submit DM Mauricio Guerrero with the Image and Username.</span></p>
+            <p><strong>Start Date:</strong> <span id="start-date">December 10, 2024</span></p>
+            <p><strong>End Date:</strong> <span id="end-date">December 15, 2024</span></p>
+            <p class="status"><strong>Status:</strong> <span id="status">Upcoming</span></p>
+        </div>
+        <a href="index.html" class="btn">Back to Homepage</a>
+    </main>
+
+    <script>
+        // Event details
+        const eventName = "2d pixel art challenge";
+        const description = "A 2d art challenge where artist within 3 hours create art.";
+        const startDate = new Date("December 8, 2024 13:00:00:00").getTime();
+        const endDate = new Date("December 8, 2024 20:00:00:00").getTime();
+
+        // Display event details
+        document.getElementById("event-name").innerText = eventName;
+        document.getElementById("description").innerText = description;
+        document.getElementById("start-date").innerText = new Date(startDate).toLocaleDateString();
+        document.getElementById("end-date").innerText = new Date(endDate).toLocaleDateString();
+
+        const timerElement = document.getElementById("timer");
+        const statusElement = document.getElementById("status");
+
+        // Countdown timer logic
+        function updateTimer() {
+            const now = new Date().getTime();
+
+            if (now < startDate) {
+                // Event not started yet
+                const timeLeft = startDate - now;
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                timerElement.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                statusElement.innerText = "Upcoming";
+            } else if (now >= startDate && now <= endDate) {
+                // Event ongoing
+                const timeLeft = endDate - now;
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                timerElement.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                statusElement.innerText = "✔ Ongoing";
+            } else {
+                // Event finished
+                timerElement.innerText = "00d 00h 00m 00s";
+                statusElement.innerText = "❌ Finished";
+            }
+        }
+
+        // Update the timer every second
+        setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</body>
+</html>
